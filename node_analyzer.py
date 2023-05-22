@@ -52,16 +52,15 @@ def find_color(curr_node: bpy.types.Node) -> Vector:
 
     :param curr_node: current node in recursive traversal.
     """
-    if any(name in curr_node.bl_idname for name in config.NODE_PATTERNS_TO_SKIP):
-        for node_input in curr_node.inputs:
-            if node_input.is_linked:
-                for link in node_input.links:
-                    return find_color(link.from_node)
-
     # enter group nodes
-    elif hasattr(curr_node, 'node_tree'):
+    if hasattr(curr_node, 'node_tree'):
         output = next(find_outputs(curr_node.node_tree), None)
-        return find_color(output)
+        group_color = find_color(output)
+
+        # if the default value, try the first group inputs
+        if group_color == Vector((0.8, 0.8, 0.8, 1.0)):
+            socket = curr_node.inputs[0]
+            return get_color_from_socket(socket, 'inputs')
 
     result = next((p for p in config.ALBEDO_MAP.keys() if p in curr_node.bl_idname), None)
     if result is not None:
@@ -73,6 +72,10 @@ def find_color(curr_node: bpy.types.Node) -> Vector:
 
             return get_color_from_socket(curr_socket, direction)
 
+    if len(curr_node.inputs) == 1:
+        socket = curr_node.inputs[0]
+        return get_color_from_socket(socket, 'inputs')
+
     return Vector((0.8, 0.8, 0.8, 1.0))
 
 
@@ -83,27 +86,30 @@ def find_float(curr_node: bpy.types.Node, node_key: dict, default_val: float) ->
     :param node_key: config key of node ids and which sockets to retrieve the float value.
     :param default_val: default float value if no nodes match.
     """
-    curr_colors = []
-    if any(name in curr_node.bl_idname for name in config.NODE_PATTERNS_TO_SKIP):
-        for node_input in curr_node.inputs:
-            if node_input.is_linked:
-                for link in node_input.links:
-                    return find_float(link.from_node, node_key, default_val)
 
-    # enter group nodes, will not penalize distance
+    # enter group nodes
     if hasattr(curr_node, 'node_tree'):
         output = next(find_outputs(curr_node.node_tree), None)
-        return find_float(output, node_key, default_val)
+        group_val = find_float(output, node_key, default_val)
+
+        # if the default value, try the first group inputs
+        if group_val == default_val:
+            socket = curr_node.inputs[0]
+            return get_float_from_socket(socket, 'inputs', node_key, default_val)
 
     result = next((p for p in node_key.keys() if p in curr_node.bl_idname), None)
     if result is not None:
         if callable(node_key[result]):
-            curr_colors.append(node_key[result](curr_node))
+            return node_key[result](curr_node)
         else:
             direction, albedo_idx = node_key[result]
             curr_socket = getattr(curr_node, direction)[albedo_idx]
 
             return get_float_from_socket(curr_socket, direction, node_key, default_val)
+
+    if len(curr_node.inputs) == 1:
+        curr_socket = curr_node.inputs[0]
+        return get_float_from_socket(curr_socket, 'inputs', node_key, default_val)
 
     return 0.0
 

@@ -31,28 +31,32 @@ def get_float_from_image(curr_node: bpy.types.Node) -> float:
     return np.max(pixels)
 
 
+FIRST_INPUT = ('inputs', 0)
+
 UNIVERSAL_MAP = {
     'ShaderNodeRGB': ('outputs', 0),
     'ShaderNodeValue': ('outputs', 0),
-    'ShaderNodeMapRange': ('inputs', 0),
-    'ShaderNodeSeparateColor': ('inputs', 0),
+    'ShaderNodeMapRange': FIRST_INPUT,
+    'ShaderNodeSeparateColor': FIRST_INPUT,
+    'NodeGroupOutput': FIRST_INPUT,
+    'ShaderNodeOutputMaterial': FIRST_INPUT,
 }
 
 ALBEDO_MAP = {
-    'ShaderNodeBsdfPrincipled': ('inputs', 0),
-    'ShaderNodeEmission': ('inputs', 0),
-    'ShaderNodeBsdfToon': ('inputs', 0),
-    'ShaderNodeBsdfAnisotropic': ('inputs', 0),
-    'ShaderNodeBsdfDiffuse': ('inputs', 0),
-    'ShaderNodeBsdfGlass': ('inputs', 0),
-    'ShaderNodeBsdfGlossy': ('inputs', 0),
-    'ShaderNodeBsdfHair': ('inputs', 0),
+    'ShaderNodeBsdfPrincipled': FIRST_INPUT,
+    'ShaderNodeEmission': FIRST_INPUT,
+    'ShaderNodeBsdfToon': FIRST_INPUT,
+    'ShaderNodeBsdfAnisotropic': FIRST_INPUT,
+    'ShaderNodeBsdfDiffuse': FIRST_INPUT,
+    'ShaderNodeBsdfGlass': FIRST_INPUT,
+    'ShaderNodeBsdfGlossy': FIRST_INPUT,
+    'ShaderNodeBsdfHair': FIRST_INPUT,
     # 'ShaderNodeHoldout', # this would need to get the world node's color
-    'ShaderNodeBsdfHairPrincipled': ('inputs', 0),
-    'ShaderNodeBsdfRefraction': ('inputs', 0),
-    'ShaderNodeSubsurfaceScattering': ('inputs', 0),
-    'ShaderNodeBsdfTranslucent': ('inputs', 0),
-    'ShaderNodeBsdfVelvet': ('inputs', 0),
+    'ShaderNodeBsdfHairPrincipled': FIRST_INPUT,
+    'ShaderNodeBsdfRefraction': FIRST_INPUT,
+    'ShaderNodeSubsurfaceScattering': FIRST_INPUT,
+    'ShaderNodeBsdfTranslucent': FIRST_INPUT,
+    'ShaderNodeBsdfVelvet': FIRST_INPUT,
     # 'ShaderNodeVertexColor', # need to analyze mesh attributes, get average color
     'ShaderNodeTexImage': get_color_from_image,
     'ShaderNodeTexEnvironment': get_color_from_image,
@@ -85,9 +89,3 @@ ROUGHNESS_MAP = {
 ALBEDO_MAP.update(UNIVERSAL_MAP)
 METALLIC_MAP.update(UNIVERSAL_MAP)
 ROUGHNESS_MAP.update(UNIVERSAL_MAP)
-
-NODE_PATTERNS_TO_SKIP = {'Reroute',
-                         'GroupInput',
-                         'GroupOutput',
-                         'NodeOutput',
-                         'ShaderNodeShaderToRGB'}
