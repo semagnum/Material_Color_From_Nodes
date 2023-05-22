@@ -61,6 +61,11 @@ ALBEDO_MAP = {
     'ShaderNodeTexImage': get_color_from_image,
     'ShaderNodeTexEnvironment': get_color_from_image,
     # 'ShaderNodeBlackbody' # convert blackbody values to color
+    'ShaderNodeBrightContrast': FIRST_INPUT,
+    'ShaderNodeGamma': FIRST_INPUT,
+    'ShaderNodeHueSaturation': ('inputs', 4),
+    'ShaderNodeInvert': ('inputs', 1),
+    'ShaderNodeRGBCurve': ('inputs', 1),
 }
 
 METALLIC_MAP = {
