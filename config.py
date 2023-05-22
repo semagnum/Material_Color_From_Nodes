@@ -65,24 +65,19 @@ ALBEDO_MAP = {
     'ShaderNodeBsdfGlass': FIRST_INPUT,
     'ShaderNodeBsdfGlossy': FIRST_INPUT,
     'ShaderNodeBsdfHair': FIRST_INPUT,
-    # 'ShaderNodeHoldout', # this would need to get the world node's color
     'ShaderNodeBsdfHairPrincipled': FIRST_INPUT,
     'ShaderNodeBsdfRefraction': FIRST_INPUT,
     'ShaderNodeSubsurfaceScattering': FIRST_INPUT,
     'ShaderNodeBsdfTranslucent': FIRST_INPUT,
     'ShaderNodeBsdfVelvet': FIRST_INPUT,
-    # 'ShaderNodeVertexColor', # need to analyze mesh attributes, get average color
     'ShaderNodeTexImage': get_color_from_image,
     'ShaderNodeTexEnvironment': get_color_from_image,
-    # 'ShaderNodeBlackbody' # convert blackbody values to color
 }
 
 METALLIC_MAP = {
     'ShaderNodeBsdfPrincipled': ('inputs', 6),
-    # 'ShaderNodeVertexColor', # need to analyze mesh attributes, get average color
     'ShaderNodeTexImage': get_float_from_image,
     'ShaderNodeTexEnvironment': get_float_from_image,
-    # 'ShaderNodeBlackbody' # convert blackbody values to color
 }
 
 ROUGHNESS_MAP = {
@@ -95,7 +90,6 @@ ROUGHNESS_MAP = {
     'ShaderNodeBsdfHairPrincipled': ('inputs', 5),
     'ShaderNodeBsdfRefraction': ('inputs', 1),
     'ShaderNodeBsdfVelvet': ('inputs', 1),
-    # 'ShaderNodeVertexColor', # need to analyze mesh attributes, get average color
     'ShaderNodeTexImage': get_float_from_image,
     'ShaderNodeTexEnvironment': get_float_from_image,
 }
