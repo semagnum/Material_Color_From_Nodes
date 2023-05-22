@@ -2,6 +2,8 @@ import bpy
 from mathutils import Vector
 import numpy as np
 
+ALPHA_THRESHOLD = 0.7
+
 
 class GroupInputException(Exception):
     """Exception to allow to get the socket index when recursion runs inside a group input node.
@@ -13,6 +15,10 @@ class GroupInputException(Exception):
 
 
 def get_color_from_image(curr_node: bpy.types.Node) -> Vector:
+    """Calculates the mean RGB in the image, excluding pixels below an alpha threshold.
+
+    :param curr_node: Image-like node
+    """
     if not hasattr(curr_node, 'image') or curr_node.image is None:
         return Vector((1.0, 0.0, 1.0, 1.0))  # typical "cannot find the texture" color
 
@@ -20,13 +26,17 @@ def get_color_from_image(curr_node: bpy.types.Node) -> Vector:
 
     # slice the pixels into the RGB channels, filter out transparent pixels, get mean
     ch_a = pixels[:, 3]
-    pixels = pixels[(ch_a >= 0.7)]
+    pixels = pixels[(ch_a >= ALPHA_THRESHOLD)]
     pixels = np.delete(pixels, 3, axis=1)
 
     return Vector(tuple(list(pixels.mean(axis=0)) + [1.0]))
 
 
 def get_float_from_image(curr_node: bpy.types.Node) -> float:
+    """Calculates the maximum value in the image, excluding the alpha channel and pixels below an alpha threshold.
+
+    :param curr_node: Image-like node
+    """
     if not hasattr(curr_node, 'image') or curr_node.image is None:
         return 0.0
 
@@ -34,7 +44,7 @@ def get_float_from_image(curr_node: bpy.types.Node) -> float:
 
     # slice the pixels into the RGB channels, filter out transparent pixels, get mean
     ch_a = pixels[:, 3]
-    pixels = pixels[(ch_a >= 0.7)]
+    pixels = pixels[(ch_a >= ALPHA_THRESHOLD)]
     pixels = np.delete(pixels, 3, axis=1)
 
     return np.max(pixels)
