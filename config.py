@@ -1,54 +1,6 @@
-import bpy
-from mathutils import Vector
-import numpy as np
+from . import color_from_nodes as color_node, float_from_nodes as float_node
 
 ALPHA_THRESHOLD = 0.7
-
-
-class GroupInputException(Exception):
-    """Exception to allow to get the socket index when recursion runs inside a group input node.
-    Enables higher-up code to get the group input socket of the higher node tree.
-    """
-    def __init__(self, input_socket_index):
-        super().__init__('Ran into group input node')
-        self.input_socket_index = input_socket_index
-
-
-def get_color_from_image(curr_node: bpy.types.Node) -> Vector:
-    """Calculates the mean RGB in the image, excluding pixels below an alpha threshold.
-
-    :param curr_node: Image-like node
-    """
-    if not hasattr(curr_node, 'image') or curr_node.image is None:
-        return Vector((1.0, 0.0, 1.0, 1.0))  # typical "cannot find the texture" color
-
-    pixels = np.array(curr_node.image.pixels).reshape(-1, 4)
-
-    # slice the pixels into the RGB channels, filter out transparent pixels, get mean
-    ch_a = pixels[:, 3]
-    pixels = pixels[(ch_a >= ALPHA_THRESHOLD)]
-    pixels = np.delete(pixels, 3, axis=1)
-
-    return Vector(tuple(list(pixels.mean(axis=0)) + [1.0]))
-
-
-def get_float_from_image(curr_node: bpy.types.Node) -> float:
-    """Calculates the maximum value in the image, excluding the alpha channel and pixels below an alpha threshold.
-
-    :param curr_node: Image-like node
-    """
-    if not hasattr(curr_node, 'image') or curr_node.image is None:
-        return 0.0
-
-    pixels = np.array(curr_node.image.pixels).reshape(-1, 4)
-
-    # slice the pixels into the RGB channels, filter out transparent pixels, get mean
-    ch_a = pixels[:, 3]
-    pixels = pixels[(ch_a >= ALPHA_THRESHOLD)]
-    pixels = np.delete(pixels, 3, axis=1)
-
-    return np.max(pixels)
-
 
 FIRST_INPUT = ('inputs', 0)
 
@@ -64,6 +16,7 @@ UNIVERSAL_MAP = {
     'ShaderNodeHueSaturation': ('inputs', 4),
     'ShaderNodeInvert': ('inputs', 1),
     'ShaderNodeRGBCurve': ('inputs', 1),
+    'ShaderNodeClamp': float_node.clamp_float
 }
 
 ALBEDO_MAP = {
@@ -80,14 +33,14 @@ ALBEDO_MAP = {
     'ShaderNodeSubsurfaceScattering': FIRST_INPUT,
     'ShaderNodeBsdfTranslucent': FIRST_INPUT,
     'ShaderNodeBsdfVelvet': FIRST_INPUT,
-    'ShaderNodeTexImage': get_color_from_image,
-    'ShaderNodeTexEnvironment': get_color_from_image,
+    'ShaderNodeTexImage': color_node.get_color_from_image,
+    'ShaderNodeTexEnvironment': color_node.get_color_from_image,
 }
 
 METALLIC_MAP = {
     'ShaderNodeBsdfPrincipled': ('inputs', 6),
-    'ShaderNodeTexImage': get_float_from_image,
-    'ShaderNodeTexEnvironment': get_float_from_image,
+    'ShaderNodeTexImage': float_node.get_float_from_image,
+    'ShaderNodeTexEnvironment': float_node.get_float_from_image,
 }
 
 ROUGHNESS_MAP = {
@@ -100,8 +53,8 @@ ROUGHNESS_MAP = {
     'ShaderNodeBsdfHairPrincipled': ('inputs', 5),
     'ShaderNodeBsdfRefraction': ('inputs', 1),
     'ShaderNodeBsdfVelvet': ('inputs', 1),
-    'ShaderNodeTexImage': get_float_from_image,
-    'ShaderNodeTexEnvironment': get_float_from_image,
+    'ShaderNodeTexImage': float_node.get_float_from_image,
+    'ShaderNodeTexEnvironment': float_node.get_float_from_image,
 }
 
 ALBEDO_MAP.update(UNIVERSAL_MAP)

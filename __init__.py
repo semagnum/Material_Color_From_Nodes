@@ -12,25 +12,23 @@
 #     You should have received a copy of the GNU General Public License
 #     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-if 'config' in locals():
+if 'bpy' in locals():
     import importlib
-    config = importlib.reload(config)
-
-if 'node_analyzer' in locals():
-    import importlib
-    node_analyzer = importlib.reload(node_analyzer)
-
-if 'operator' in locals():
-    import importlib
-    operator = importlib.reload(operator)
-
-if 'panel' in locals():
-    import importlib
-    panel = importlib.reload(panel)
+    reloadable_modules = [
+        'util',
+        'color_from_nodes',
+        'float_from_nodes',
+        'config',
+        'operator',
+        'panel'
+    ]
+    for module_name in reloadable_modules:
+        if module_name in locals():
+            importlib.reload(locals()[module_name])
 
 import bpy
 
-from . import config, node_analyzer, operator, panel
+from . import config, color_from_nodes, float_from_nodes, operator, panel, util
 
 
 

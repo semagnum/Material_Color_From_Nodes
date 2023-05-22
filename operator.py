@@ -14,18 +14,18 @@
 
 import bpy
 
-from . import config, node_analyzer as node
+from . import config, color_from_nodes as color_node, float_from_nodes as float_node, util
 
 
 def set_material(material):
     if material.use_nodes:
         node_tree = material.node_tree
-        output = next(node.find_outputs(node_tree), None)
+        output = next(util.find_outputs(node_tree), None)
 
         if output is not None:
-            material.diffuse_color = node.find_color(output)
-            material.roughness = node.find_float(output, config.ROUGHNESS_MAP, 0.5)
-            material.metallic = node.find_float(output, config.METALLIC_MAP, 0.0)
+            material.diffuse_color = color_node.find_color(output, config.ALBEDO_MAP)
+            material.roughness = float_node.find_float(output, config.ROUGHNESS_MAP, 0.5)
+            material.metallic = float_node.find_float(output, config.METALLIC_MAP, 0.0)
 
 
 class CM_OT_SetAllSelectedObjectsViewportDisplayMaterialProperties(bpy.types.Operator):
