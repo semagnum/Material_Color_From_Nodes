@@ -35,13 +35,13 @@ class CM_OT_SetAllSelectedObjectsViewportDisplayMaterialProperties(bpy.types.Ope
     bl_options = {'REGISTER', 'UNDO'}
 
     def execute(self, context):
-        for obj in context.selected_objects:
-            for slot in obj.material_slots:
-                if slot.material is not None:
-                    material = slot.material
-                    set_material(material)
-                else:
-                    self.report({'WARNING'}, f'Material slot in {obj.name} has no material assigned, skipping')
+        materials = {slot.material
+                     for obj in context.selected_objects
+                     for slot in obj.material_slots
+                     if slot.material is not None}
+
+        for material in materials:
+            set_material(material)
 
         return {'FINISHED'}
 
@@ -69,12 +69,12 @@ class CM_OT_SetActiveObjectDisplayMaterialProperties(bpy.types.Operator):
     bl_options = {'REGISTER', 'UNDO'}
 
     def execute(self, context):
-        for slot in context.active_object.material_slots:
-            if slot.material is not None:
-                material = slot.material
-                set_material(material)
-            else:
-                self.report({'WARNING'}, 'Material slot has no material assigned, skipping')
+        materials = {slot.material
+                     for slot in context.active_object.material_slots
+                     if slot.material is not None}
+
+        for material in materials:
+            set_material(material)
 
         return {'FINISHED'}
 
