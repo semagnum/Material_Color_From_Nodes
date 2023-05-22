@@ -24,14 +24,20 @@ if 'operator' in locals():
     import importlib
     operator = importlib.reload(operator)
 
+if 'panel' in locals():
+    import importlib
+    panel = importlib.reload(panel)
+
 import bpy
 
-from . import config, node_analyzer, operator
+from . import config, node_analyzer, operator, panel
+
+
 
 bl_info = {
     "name": 'Material Color from Nodes',
     "author": 'Spencer Magnusson',
-    "version": (0, 0, 5),
+    "version": (0, 0, 6),
     "blender": (3, 5, 0),
     "description": 'Analyze various aspects of scene to determine complexity',
     "location": 'Object Material',
@@ -41,11 +47,21 @@ bl_info = {
 
 
 def register():
-    bpy.utils.register_class(operator.CM_OT_ObjectColorFromMaterial)
+    bpy.utils.register_class(operator.CM_OT_SetAllMaterialDisplayProperties)
+    bpy.utils.register_class(operator.CM_OT_SetActiveObjectDisplayMaterialProperties)
+    bpy.utils.register_class(operator.CM_OT_SetAllSelectedObjectsViewportDisplayMaterialProperties)
+    bpy.utils.register_class(operator.CM_OT_SetActiveMaterialViewportDisplayMaterialProperties)
+
+    bpy.utils.register_class(panel.CM_PT_ObjectColorFromMaterial)
 
 
 def unregister():
-    bpy.utils.unregister_class(operator.CM_OT_ObjectColorFromMaterial)
+    bpy.utils.unregister_class(panel.CM_PT_ObjectColorFromMaterial)
+
+    bpy.utils.unregister_class(operator.CM_OT_SetAllMaterialDisplayProperties)
+    bpy.utils.unregister_class(operator.CM_OT_SetActiveObjectDisplayMaterialProperties)
+    bpy.utils.unregister_class(operator.CM_OT_SetAllSelectedObjectsViewportDisplayMaterialProperties)
+    bpy.utils.unregister_class(operator.CM_OT_SetActiveMaterialViewportDisplayMaterialProperties)
 
 
 if __name__ == '__main__':
