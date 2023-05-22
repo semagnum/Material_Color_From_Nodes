@@ -4,6 +4,17 @@ from mathutils import Vector
 import numpy as np
 
 
+def color_ramp(*args):
+    """Calculates the mean RGB in the image, excluding pixels below an alpha threshold.
+
+    :param curr_node: Image-like node
+    """
+
+    node, node_key, default_val = args
+    factor_val = node_eval.assert_float(node_eval.get_from_socket(node.inputs[0], node_key, 0.5))
+    return node_eval.assert_color(node.color_ramp.evaluate(factor_val))
+
+
 def image_node(*args) -> Vector:
     """Calculates the mean RGB in the image, excluding pixels below an alpha threshold.
 
