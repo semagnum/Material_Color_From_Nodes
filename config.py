@@ -3,6 +3,15 @@ from mathutils import Vector
 import numpy as np
 
 
+class GroupInputException(Exception):
+    """Exception to allow to get the socket index when recursion runs inside a group input node.
+    Enables higher-up code to get the group input socket of the higher node tree.
+    """
+    def __init__(self, input_socket_index):
+        super().__init__('Ran into group input node')
+        self.input_socket_index = input_socket_index
+
+
 def get_color_from_image(curr_node: bpy.types.Node) -> Vector:
     if not hasattr(curr_node, 'image') or curr_node.image is None:
         return Vector((1.0, 0.0, 1.0, 1.0))  # typical "cannot find the texture" color

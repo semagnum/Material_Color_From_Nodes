@@ -5,6 +5,10 @@ from typing import Iterator
 from . import config
 
 
+def get_socket_index(socket):
+    return int(socket.path_from_id().split('[')[-1][:-1])  # extracts index from str
+
+
 def get_color_from_socket(socket, direction: str) -> Vector:
     """Get color from node socket - either evaluating the default value or following the link.
 
@@ -13,6 +17,23 @@ def get_color_from_socket(socket, direction: str) -> Vector:
     :return: color value of socket
     """
     if socket.is_linked and direction == 'inputs':
+        next_node = socket.links[0].from_node
+
+        if next_node.bl_idname == 'NodeGroupInput':
+            socket_index = get_socket_index(socket.links[0].from_socket)
+            raise config.GroupInputException(input_socket_index=socket_index)
+
+        # if a group node, use the right socket index
+        if hasattr(next_node, 'node_tree'):
+            output = next(find_outputs(next_node.node_tree), None)
+            socket_index = get_socket_index(socket.links[0].from_socket)
+
+            try:
+                return get_color_from_socket(output.inputs[socket_index], 'inputs')
+            except config.GroupInputException as gie:
+                input_node_socket_index = gie.input_socket_index
+                return get_color_from_socket(next_node.inputs[input_node_socket_index], 'inputs')
+
         return find_color(socket.links[0].from_node)
     else:
         try:
@@ -34,6 +55,23 @@ def get_float_from_socket(curr_socket, direction: str, node_key: dict, default_v
     :return: float value from socket
     """
     if curr_socket.is_linked and direction == 'inputs':
+        next_node = curr_socket.links[0].from_node
+
+        if next_node.bl_idname == 'NodeGroupInput':
+            socket_index = get_socket_index(curr_socket.links[0].from_socket)
+            raise config.GroupInputException(input_socket_index=socket_index)
+
+        # if a group node, use the right socket index
+        if hasattr(next_node, 'node_tree'):
+            output = next(find_outputs(next_node.node_tree), None)
+            socket_index = get_socket_index(curr_socket.links[0].from_socket)
+
+            try:
+                return get_float_from_socket(output.inputs[socket_index], 'inputs', node_key, default_val)
+            except config.GroupInputException as gie:
+                input_node_socket_index = gie.input_socket_index
+                return get_float_from_socket(next_node.inputs[input_node_socket_index], 'inputs', node_key, default_val)
+
         return find_float(curr_socket.links[0].from_node, node_key, default_val)
     else:
         val = curr_socket.default_value
@@ -42,7 +80,7 @@ def get_float_from_socket(curr_socket, direction: str, node_key: dict, default_v
         except TypeError:
             pass
         else:
-            val = max(val[:-1]) # exclude alpha channel
+            val = max(val[:-1])  # exclude alpha channel
 
         return val
 
