@@ -16,8 +16,8 @@ if 'bpy' in locals():
     import importlib
     reloadable_modules = [
         'util',
-        'color_from_nodes',
-        'float_from_nodes',
+        'node_eval',
+        'custom_node_eval',
         'config',
         'operator',
         'panel'
@@ -28,14 +28,14 @@ if 'bpy' in locals():
 
 import bpy
 
-from . import config, color_from_nodes, float_from_nodes, operator, panel, util
+from . import config, node_eval, custom_node_eval, operator, panel, util
 
 
 
 bl_info = {
     "name": 'Material Color from Nodes',
     "author": 'Spencer Magnusson',
-    "version": (0, 0, 6),
+    "version": (0, 0, 7),
     "blender": (3, 5, 0),
     "description": 'Analyze various aspects of scene to determine complexity',
     "location": 'Object Material',

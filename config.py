@@ -12,7 +12,7 @@
 #     You should have received a copy of the GNU General Public License
 #     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from . import color_from_nodes as color_node, float_from_nodes as float_node
+from . import custom_node_eval as custom
 
 ALPHA_THRESHOLD = 0.7
 
@@ -30,7 +30,9 @@ UNIVERSAL_MAP = {
     'ShaderNodeHueSaturation': ('inputs', 4),
     'ShaderNodeInvert': ('inputs', 1),
     'ShaderNodeRGBCurve': ('inputs', 1),
-    'ShaderNodeClamp': float_node.clamp_float
+    'ShaderNodeClamp': custom.clamp_node,
+    'ShaderNodeTexImage': custom.image_node,
+    'ShaderNodeTexEnvironment': custom.image_node,
 }
 
 ALBEDO_MAP = {
@@ -47,14 +49,10 @@ ALBEDO_MAP = {
     'ShaderNodeSubsurfaceScattering': FIRST_INPUT,
     'ShaderNodeBsdfTranslucent': FIRST_INPUT,
     'ShaderNodeBsdfVelvet': FIRST_INPUT,
-    'ShaderNodeTexImage': color_node.get_color_from_image,
-    'ShaderNodeTexEnvironment': color_node.get_color_from_image,
 }
 
 METALLIC_MAP = {
     'ShaderNodeBsdfPrincipled': ('inputs', 6),
-    'ShaderNodeTexImage': float_node.get_float_from_image,
-    'ShaderNodeTexEnvironment': float_node.get_float_from_image,
 }
 
 ROUGHNESS_MAP = {
@@ -67,8 +65,6 @@ ROUGHNESS_MAP = {
     'ShaderNodeBsdfHairPrincipled': ('inputs', 5),
     'ShaderNodeBsdfRefraction': ('inputs', 1),
     'ShaderNodeBsdfVelvet': ('inputs', 1),
-    'ShaderNodeTexImage': float_node.get_float_from_image,
-    'ShaderNodeTexEnvironment': float_node.get_float_from_image,
 }
 
 ALBEDO_MAP.update(UNIVERSAL_MAP)

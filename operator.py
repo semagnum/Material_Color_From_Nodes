@@ -13,8 +13,9 @@
 #     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import bpy
+from mathutils import Vector
 
-from . import config, color_from_nodes as color_node, float_from_nodes as float_node, util
+from . import config, node_eval as node, util
 
 
 def set_material(material):
@@ -23,9 +24,11 @@ def set_material(material):
         output = next(util.find_outputs(node_tree), None)
 
         if output is not None:
-            material.diffuse_color = color_node.find_color(output, config.ALBEDO_MAP)
-            material.roughness = float_node.find_float(output, config.ROUGHNESS_MAP, 0.5)
-            material.metallic = float_node.find_float(output, config.METALLIC_MAP, 0.0)
+            material.diffuse_color = node.assert_color(node.get_from_node(output, config.ALBEDO_MAP,
+                                                                          Vector((0.8, 0.8, 0.8, 1.0))
+                                                                          ))
+            material.roughness = node.assert_float(node.get_from_node(output, config.ROUGHNESS_MAP, 0.5))
+            material.metallic = node.assert_float(node.get_from_node(output, config.METALLIC_MAP, 0.0))
 
 
 class CM_OT_SetAllSelectedObjectsViewportDisplayMaterialProperties(bpy.types.Operator):
