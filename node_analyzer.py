@@ -42,7 +42,7 @@ def get_float_from_socket(curr_socket, direction: str, node_key: dict, default_v
         except TypeError:
             pass
         else:
-            val = max(val)
+            val = max(val[:-1]) # exclude alpha channel
 
         return val
 
