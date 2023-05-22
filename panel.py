@@ -9,7 +9,7 @@ class CM_PT_ObjectColorFromMaterial(bpy.types.Panel):
     bl_region_type = 'WINDOW'
     bl_context = 'material'
 
-    def draw(self, context):
+    def draw(self, _context):
         layout = self.layout
 
         layout.operator(operator.CM_OT_SetActiveMaterialViewportDisplayMaterialProperties.bl_idname,
