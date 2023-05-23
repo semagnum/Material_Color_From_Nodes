@@ -20,7 +20,7 @@ def image_node(*args) -> Vector:
 
     :param curr_node: Image-like node
     """
-    curr_node = args[0]
+    curr_node, _, default_val = args
     if not hasattr(curr_node, 'image') or curr_node.image is None:
         return Vector((1.0, 0.0, 1.0, 1.0))  # typical "cannot find the texture" color
 
@@ -31,7 +31,12 @@ def image_node(*args) -> Vector:
     pixels = pixels[(ch_a >= 0.7)]
     pixels = np.delete(pixels, 3, axis=1)
 
-    return Vector(tuple(list(pixels.mean(axis=0)) + [1.0]))
+    color_mean = pixels.mean(axis=0)
+
+    if not np.all(np.isfinite(color_mean)):
+        return default_val
+
+    return Vector(tuple(list(color_mean) + [1.0]))
 
 
 def clamp_node(*args):

@@ -35,7 +35,7 @@ from . import config, node_eval, custom_node_eval, operator, panel, util
 bl_info = {
     "name": 'Material Color from Nodes',
     "author": 'Spencer Magnusson',
-    "version": (0, 0, 7),
+    "version": (0, 0, 8),
     "blender": (3, 5, 0),
     "description": 'Analyze various aspects of scene to determine complexity',
     "location": 'Object Material',
