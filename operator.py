@@ -57,7 +57,7 @@ class CM_OT_SetActiveMaterialViewportDisplayMaterialProperties(bpy.types.Operato
 
     @classmethod
     def poll(cls, context):
-        return context.active_object.active_material is not None
+        return context.active_object.active_material is not None and context.active_object.active_material.use_nodes
 
     def execute(self, context):
         set_material(context.active_object.active_material)
