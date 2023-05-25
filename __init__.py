@@ -35,7 +35,7 @@ from . import config, node_eval, custom_node_eval, operator, panel, util
 bl_info = {
     "name": 'Material Color from Nodes',
     "author": 'Spencer Magnusson',
-    "version": (0, 0, 10),
+    "version": (0, 0, 12),
     "blender": (3, 5, 0),
     "description": 'Analyze various aspects of scene to determine complexity',
     "location": 'Object Material',
@@ -49,6 +49,7 @@ def register():
     bpy.utils.register_class(operator.CM_OT_SetActiveObjectDisplayMaterialProperties)
     bpy.utils.register_class(operator.CM_OT_SetAllSelectedObjectsViewportDisplayMaterialProperties)
     bpy.utils.register_class(operator.CM_OT_SetActiveMaterialViewportDisplayMaterialProperties)
+    bpy.utils.register_class(operator.CM_OT_SetMaterialDisplayPropertiesFromActiveNode)
 
     bpy.utils.register_class(panel.CM_PT_ObjectColorFromMaterial)
 
@@ -60,6 +61,7 @@ def unregister():
     bpy.utils.unregister_class(operator.CM_OT_SetActiveObjectDisplayMaterialProperties)
     bpy.utils.unregister_class(operator.CM_OT_SetAllSelectedObjectsViewportDisplayMaterialProperties)
     bpy.utils.unregister_class(operator.CM_OT_SetActiveMaterialViewportDisplayMaterialProperties)
+    bpy.utils.unregister_class(operator.CM_OT_SetMaterialDisplayPropertiesFromActiveNode)
 
 
 if __name__ == '__main__':

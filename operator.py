@@ -93,3 +93,30 @@ class CM_OT_SetAllMaterialDisplayProperties(bpy.types.Operator):
             set_material(material)
 
         return {'FINISHED'}
+
+
+class CM_OT_SetMaterialDisplayPropertiesFromActiveNode(bpy.types.Operator):
+    """Sets all materials' viewport display properties."""
+    bl_idname = 'object.active_material_from_active_node_to_viewport'
+    bl_label = 'Active Material Node To Viewport Display'
+    bl_description = ('Set active material\'s viewport display attributes '
+                      'based on currently selected node (only select one!)')
+    bl_options = {'REGISTER', 'UNDO'}
+
+    @classmethod
+    def poll(cls, context):
+        material = context.active_object.active_material
+        return material is not None and material.use_nodes and len([node
+                                                                    for node in material.node_tree.nodes
+                                                                    if node.select]) == 1
+
+    def execute(self, context):
+        material = context.active_object.active_material
+        active_node = [n for n in material.node_tree.nodes if n.select][0]
+        material.diffuse_color = node.assert_color(node.get_from_node(active_node, config.ALBEDO_MAP,
+                                                                      Vector((0.8, 0.8, 0.8, 1.0))
+                                                                      ))
+        material.roughness = node.assert_float(node.get_from_node(active_node, config.ROUGHNESS_MAP, 0.5))
+        material.metallic = node.assert_float(node.get_from_node(active_node, config.METALLIC_MAP, 0.0))
+
+        return {'FINISHED'}

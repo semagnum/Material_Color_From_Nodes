@@ -16,6 +16,7 @@ import bpy
 
 from . import operator
 
+
 class CM_PT_ObjectColorFromMaterial(bpy.types.Panel):
     bl_label = 'Viewport Display from Nodes'
     bl_idname = 'CM_PT_ObjectColorFromMaterial'
@@ -26,8 +27,12 @@ class CM_PT_ObjectColorFromMaterial(bpy.types.Panel):
     def draw(self, _context):
         layout = self.layout
 
-        layout.operator(operator.CM_OT_SetActiveMaterialViewportDisplayMaterialProperties.bl_idname,
-                        text='Active Material', icon='MATERIAL')
+        row = layout.row()
+        row.operator(operator.CM_OT_SetActiveMaterialViewportDisplayMaterialProperties.bl_idname,
+                     text='Active Material', icon='MATERIAL')
+        row.operator(operator.CM_OT_SetMaterialDisplayPropertiesFromActiveNode.bl_idname,
+                     text='Active Node', icon='NODETREE')
+
         layout.operator(operator.CM_OT_SetActiveObjectDisplayMaterialProperties.bl_idname,
                         text='Active Object', icon='OBJECT_DATA')
         layout.operator(operator.CM_OT_SetAllSelectedObjectsViewportDisplayMaterialProperties.bl_idname,
