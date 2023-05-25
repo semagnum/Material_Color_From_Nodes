@@ -33,7 +33,8 @@ UNIVERSAL_MAP = {
     'ShaderNodeClamp': custom.clamp_node,
     'ShaderNodeTexImage': custom.image_node,
     'ShaderNodeTexEnvironment': custom.image_node,
-    'ShaderNodeValToRGB': custom.color_ramp
+    'ShaderNodeValToRGB': custom.color_ramp,
+    'ShaderNodeMix': custom.mix_node,
 }
 
 ALBEDO_MAP = {

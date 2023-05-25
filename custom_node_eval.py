@@ -56,3 +56,36 @@ def clamp_node(*args):
         min_socket_val, max_socket_val = new_min_socket_val, new_max_socket_val
 
     return min(max(value_socket_val, min_socket_val), max_socket_val)
+
+
+def mix_node(*args) -> Vector:
+    # We're just going to mix the two socket values based on factor.
+    node, node_key, default_val = args
+
+    data_type = node.data_type
+    factor_value = node_eval.assert_float(node_eval.get_from_socket(node.inputs[0], node_key, default_val))
+
+    if data_type == 'RGBA':
+        a_socket = node.inputs[6]
+        b_socket = node.inputs[7]
+    elif data_type == 'VECTOR':
+        a_socket = node.inputs[4]
+        b_socket = node.inputs[5]
+    else:
+        a_socket = node.inputs[2]
+        b_socket = node.inputs[3]
+
+    a_factor = 1 - factor_value
+    if data_type == 'FLOAT':
+        a_val = node_eval.assert_float(node_eval.get_from_socket(node.inputs[2], node_key, default_val))
+        b_val = node_eval.assert_float(node_eval.get_from_socket(node.inputs[3], node_key, default_val))
+        val = (b_val * factor_value) + (a_val * a_factor)
+    else:
+        a_factor = 1 - factor_value
+        a_val = [v * a_factor
+                 for v in node_eval.assert_color(node_eval.get_from_socket(a_socket, node_key, default_val))]
+        b_val = [v * factor_value
+                 for v in node_eval.assert_color(node_eval.get_from_socket(b_socket, node_key, default_val))]
+        val = Vector([a + b for a,b in zip(a_val, b_val)])
+
+    return val
