@@ -1,4 +1,4 @@
-# Viewport Display Color from Material Node Tree
+# Material Viewport Color from Nodes
 
 ## Operators
 
