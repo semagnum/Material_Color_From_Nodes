@@ -63,7 +63,7 @@ def mix_node(*args) -> Vector:
     node, node_key, default_val = args
 
     data_type = node.data_type
-    factor_value = node_eval.assert_float(node_eval.get_from_socket(node.inputs[0], node_key, default_val))
+    factor_value = node_eval.assert_float(node_eval.get_from_socket(node.inputs[0], node_key, 0.0))
 
     if data_type == 'RGBA':
         a_socket = node.inputs[6]
