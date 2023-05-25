@@ -1,5 +1,10 @@
 # Material Viewport Color from Nodes
 
+## Where do I find it?
+
+Once you have enabled the add-on in your preferences,
+you can find its UI and operators in your object's material properties tab.
+
 ## Operators
 
 There are multiple operators that you can use to set materials. You can limit its scope to:
