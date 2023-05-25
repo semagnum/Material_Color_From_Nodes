@@ -33,14 +33,14 @@ from . import config, node_eval, custom_node_eval, operator, panel, util
 
 
 bl_info = {
-    "name": 'Material Color from Nodes',
+    "name": 'Material Viewport Color from Nodes',
     "author": 'Spencer Magnusson',
-    "version": (0, 0, 12),
+    "version": (0, 1, 0),
     "blender": (3, 5, 0),
-    "description": 'Analyze various aspects of scene to determine complexity',
-    "location": 'Object Material',
+    "description": 'Sets material viewport display attributes based on the node tree',
+    "location": 'Object Material Properties',
     "support": 'COMMUNITY',
-    "category_icon": 'Object'
+    "category": 'Material'
 }
 
 
