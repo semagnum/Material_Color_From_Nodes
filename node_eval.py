@@ -87,7 +87,7 @@ def get_from_node(curr_node: bpy.types.Node, node_key: dict, default_val) -> flo
             socket = curr_node.inputs[0]
             return get_from_socket(socket, node_key, default_val)
 
-    result = next((p for p in node_key.keys() if p in curr_node.bl_idname), None)
+    result = next((p for p in node_key.keys() if p == curr_node.bl_idname), None)
     if result is not None:
         if callable(node_key[result]):
             return node_key[result](curr_node, node_key, default_val)
