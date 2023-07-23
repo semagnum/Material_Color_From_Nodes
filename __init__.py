@@ -43,25 +43,16 @@ bl_info = {
     "category": 'Material'
 }
 
+addon_classes = [
+    operator.CM_OT_SetAllMaterialDisplayProperties,
+    operator.CM_OT_SetActiveObjectDisplayMaterialProperties,
+    operator.CM_OT_SetAllSelectedObjectsViewportDisplayMaterialProperties,
+    operator.CM_OT_SetActiveMaterialViewportDisplayMaterialProperties,
+    operator.CM_OT_SetMaterialDisplayPropertiesFromActiveNode,
+    panel.CM_PT_ObjectColorFromMaterial,
+]
 
-def register():
-    bpy.utils.register_class(operator.CM_OT_SetAllMaterialDisplayProperties)
-    bpy.utils.register_class(operator.CM_OT_SetActiveObjectDisplayMaterialProperties)
-    bpy.utils.register_class(operator.CM_OT_SetAllSelectedObjectsViewportDisplayMaterialProperties)
-    bpy.utils.register_class(operator.CM_OT_SetActiveMaterialViewportDisplayMaterialProperties)
-    bpy.utils.register_class(operator.CM_OT_SetMaterialDisplayPropertiesFromActiveNode)
-
-    bpy.utils.register_class(panel.CM_PT_ObjectColorFromMaterial)
-
-
-def unregister():
-    bpy.utils.unregister_class(panel.CM_PT_ObjectColorFromMaterial)
-
-    bpy.utils.unregister_class(operator.CM_OT_SetAllMaterialDisplayProperties)
-    bpy.utils.unregister_class(operator.CM_OT_SetActiveObjectDisplayMaterialProperties)
-    bpy.utils.unregister_class(operator.CM_OT_SetAllSelectedObjectsViewportDisplayMaterialProperties)
-    bpy.utils.unregister_class(operator.CM_OT_SetActiveMaterialViewportDisplayMaterialProperties)
-    bpy.utils.unregister_class(operator.CM_OT_SetMaterialDisplayPropertiesFromActiveNode)
+register, unregister = bpy.utils.register_classes_factory(addon_classes)
 
 
 if __name__ == '__main__':
