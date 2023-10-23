@@ -14,6 +14,9 @@
 
 from . import custom_node_eval as custom
 
+import bpy
+IS_BPY_V3 = bpy.app.version < (4, 0, 0)
+
 ALPHA_THRESHOLD = 0.7
 
 FIRST_INPUT = ('inputs', 0)
@@ -54,11 +57,11 @@ ALBEDO_MAP = {
 }
 
 METALLIC_MAP = {
-    'ShaderNodeBsdfPrincipled': ('inputs', 6),
+    'ShaderNodeBsdfPrincipled': ('inputs', 6) if IS_BPY_V3 else ('inputs', 1),
 }
 
 ROUGHNESS_MAP = {
-    'ShaderNodeBsdfPrincipled': ('inputs', 9),
+    'ShaderNodeBsdfPrincipled': ('inputs', 9) if IS_BPY_V3 else ('inputs', 2),
     'ShaderNodeBsdfToon': ('inputs', 1),
     'ShaderNodeBsdfAnisotropic': ('inputs', 1),
     'ShaderNodeBsdfDiffuse': ('inputs', 1),
