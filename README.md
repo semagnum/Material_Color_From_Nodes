@@ -68,6 +68,4 @@ it simply mixes the two values.
  - Shader to RGB
  - Mix
 
-Don't see the node you want in here? You have two options:
-- use the "Selected node" operator to force evaluation behind the missing node.
-- if you feel this node would benefit other users as well, make your case in the GitHub issues tab!
+Don't see the node you want in here? If you feel this node would benefit other users as well, make your case in the GitHub issues tab!
