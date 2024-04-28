@@ -1,4 +1,4 @@
-# Copyright (C) 2023 Spencer Magnusson
+# Copyright (C) 2024 Spencer Magnusson
 # semagnum@gmail.com
 # Created by Spencer Magnusson
 #     This program is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@ from mathutils import Vector
 from . import config, node_eval as node, util
 
 
-def set_material(material):
+def set_material(material, metallic: bool, roughness: bool):
     if material.use_nodes:
         node_tree = material.node_tree
         output = next(util.find_outputs(node_tree), None)
@@ -27,15 +27,33 @@ def set_material(material):
             material.diffuse_color = node.assert_color(node.get_from_node(output, config.ALBEDO_MAP,
                                                                           Vector((0.8, 0.8, 0.8, 1.0))
                                                                           ))
-            material.roughness = node.assert_float(node.get_from_node(output, config.ROUGHNESS_MAP, 0.5))
-            material.metallic = node.assert_float(node.get_from_node(output, config.METALLIC_MAP, 0.0))
+            if roughness:
+                material.roughness = node.assert_float(node.get_from_node(output, config.ROUGHNESS_MAP, 0.5))
+
+            if metallic:
+                material.metallic = node.assert_float(node.get_from_node(output, config.METALLIC_MAP, 0.0))
 
 
-class CM_OT_SetAllSelectedObjectsViewportDisplayMaterialProperties(bpy.types.Operator):
+class CFMOperator(bpy.types.Operator):
+    bl_options = {'REGISTER', 'UNDO'}
+
+    analyze_metallic: bpy.props.BoolProperty(
+        name='Detect Metallic',
+        description='Detects potential values for viewport material\'s metallic property',
+        default=True,
+    )
+
+    analyze_roughness: bpy.props.BoolProperty(
+        name='Detect Roughness',
+        description='Detects potential values for viewport material\'s roughness property',
+        default=True,
+    )
+
+
+class SelectedObjectsOperator(CFMOperator):
     """Sets all selected object's viewport display properties."""
     bl_idname = 'object.selected_objects_nodes_to_viewport'
     bl_label = 'Set Selected Objects\' Nodes To Viewport Display'
-    bl_options = {'REGISTER', 'UNDO'}
 
     def execute(self, context):
         materials = {slot.material
@@ -44,32 +62,30 @@ class CM_OT_SetAllSelectedObjectsViewportDisplayMaterialProperties(bpy.types.Ope
                      if slot.material is not None}
 
         for material in materials:
-            set_material(material)
+            set_material(material, self.analyze_metallic, self.analyze_roughness)
 
         return {'FINISHED'}
 
 
-class CM_OT_SetActiveMaterialViewportDisplayMaterialProperties(bpy.types.Operator):
+class ActiveMaterialOperator(CFMOperator):
     """Sets current object's active material's viewport display properties."""
     bl_idname = 'object.active_material_nodes_to_viewport'
     bl_label = 'Active Material Nodes To Viewport Display'
-    bl_options = {'REGISTER', 'UNDO'}
 
     @classmethod
     def poll(cls, context):
         return context.active_object.active_material is not None and context.active_object.active_material.use_nodes
 
     def execute(self, context):
-        set_material(context.active_object.active_material)
+        set_material(context.active_object.active_material, self.analyze_metallic, self.analyze_roughness)
 
         return {'FINISHED'}
 
 
-class CM_OT_SetActiveObjectDisplayMaterialProperties(bpy.types.Operator):
+class ActiveObjectOperator(CFMOperator):
     """Sets current object's material's viewport display properties."""
     bl_idname = 'object.active_object_nodes_to_viewport'
     bl_label = 'Active Objects\' Material Nodes To Viewport Display'
-    bl_options = {'REGISTER', 'UNDO'}
 
     def execute(self, context):
         materials = {slot.material
@@ -77,31 +93,29 @@ class CM_OT_SetActiveObjectDisplayMaterialProperties(bpy.types.Operator):
                      if slot.material is not None}
 
         for material in materials:
-            set_material(material)
+            set_material(material, self.analyze_metallic, self.analyze_roughness)
 
         return {'FINISHED'}
 
 
-class CM_OT_SetAllMaterialDisplayProperties(bpy.types.Operator):
+class AllMaterialsOperator(CFMOperator):
     """Sets all materials' viewport display properties."""
     bl_idname = 'object.all_material_nodes_to_viewport'
     bl_label = 'All Material Nodes To Viewport Display'
-    bl_options = {'REGISTER', 'UNDO'}
 
     def execute(self, _context):
         for material in bpy.data.materials:
-            set_material(material)
+            set_material(material, self.analyze_metallic, self.analyze_roughness)
 
         return {'FINISHED'}
 
 
-class CM_OT_SetMaterialDisplayPropertiesFromActiveNode(bpy.types.Operator):
+class ActiveMaterialNodeOperator(CFMOperator):
     """Sets all materials' viewport display properties."""
     bl_idname = 'object.active_material_from_active_node_to_viewport'
     bl_label = 'Active Material Node To Viewport Display'
     bl_description = ('Set active material\'s viewport display attributes '
                       'based on currently selected node (only select one!)')
-    bl_options = {'REGISTER', 'UNDO'}
 
     @classmethod
     def poll(cls, context):
@@ -116,7 +130,10 @@ class CM_OT_SetMaterialDisplayPropertiesFromActiveNode(bpy.types.Operator):
         material.diffuse_color = node.assert_color(node.get_from_node(active_node, config.ALBEDO_MAP,
                                                                       Vector((0.8, 0.8, 0.8, 1.0))
                                                                       ))
-        material.roughness = node.assert_float(node.get_from_node(active_node, config.ROUGHNESS_MAP, 0.5))
-        material.metallic = node.assert_float(node.get_from_node(active_node, config.METALLIC_MAP, 0.0))
+        if self.analyze_roughness:
+            material.roughness = node.assert_float(node.get_from_node(active_node, config.ROUGHNESS_MAP, 0.5))
+
+        if self.analyze_metallic:
+            material.metallic = node.assert_float(node.get_from_node(active_node, config.METALLIC_MAP, 0.0))
 
         return {'FINISHED'}

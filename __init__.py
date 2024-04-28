@@ -1,4 +1,4 @@
-# Copyright (C) 2023 Spencer Magnusson
+# Copyright (C) 2024 Spencer Magnusson
 # semagnum@gmail.com
 # Created by Spencer Magnusson
 #     This program is free software: you can redistribute it and/or modify
@@ -35,7 +35,7 @@ from . import config, node_eval, custom_node_eval, operator, panel, util
 bl_info = {
     "name": 'Material Viewport Color from Nodes',
     "author": 'Spencer Magnusson',
-    "version": (0, 1, 2),
+    "version": (0, 1, 3),
     "blender": (3, 5, 0),
     "description": 'Sets material viewport display attributes based on the node tree',
     "location": 'Object Material Properties',
@@ -44,15 +44,41 @@ bl_info = {
 }
 
 addon_classes = [
-    operator.CM_OT_SetAllMaterialDisplayProperties,
-    operator.CM_OT_SetActiveObjectDisplayMaterialProperties,
-    operator.CM_OT_SetAllSelectedObjectsViewportDisplayMaterialProperties,
-    operator.CM_OT_SetActiveMaterialViewportDisplayMaterialProperties,
-    operator.CM_OT_SetMaterialDisplayPropertiesFromActiveNode,
+    operator.AllMaterialsOperator,
+    operator.ActiveObjectOperator,
+    operator.SelectedObjectsOperator,
+    operator.ActiveMaterialOperator,
+    operator.ActiveMaterialNodeOperator,
     panel.CM_PT_ObjectColorFromMaterial,
 ]
 
-register, unregister = bpy.utils.register_classes_factory(addon_classes)
+
+def register():
+    """Registers operators and properties."""
+
+    bpy.types.WindowManager.cfm_analyze_metallic = bpy.props.BoolProperty(
+        name='Detect Metallic',
+        description='Detects potential values for viewport material\'s metallic property',
+        default=True,
+    )
+    bpy.types.WindowManager.cfm_analyze_roughness = bpy.props.BoolProperty(
+        name='Detect Roughness',
+        description='Detects potential values for viewport material\'s roughness property',
+        default=True,
+    )
+
+    for cls in addon_classes:
+        bpy.utils.register_class(cls)
+
+
+def unregister():
+    """Unregisters operators and properties."""
+
+    for cls in addon_classes[::-1]:
+        bpy.utils.unregister_class(cls)
+
+    del bpy.types.WindowManager.cfm_analyze_metallic
+    del bpy.types.WindowManager.cfm_analyze_roughness
 
 
 if __name__ == '__main__':

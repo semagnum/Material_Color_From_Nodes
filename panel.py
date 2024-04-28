@@ -1,4 +1,4 @@
-# Copyright (C) 2023 Spencer Magnusson
+# Copyright (C) 2024 Spencer Magnusson
 # semagnum@gmail.com
 # Created by Spencer Magnusson
 #     This program is free software: you can redistribute it and/or modify
@@ -24,18 +24,31 @@ class CM_PT_ObjectColorFromMaterial(bpy.types.Panel):
     bl_region_type = 'WINDOW'
     bl_context = 'material'
 
-    def draw(self, _context):
+    def draw(self, context):
         layout = self.layout
+        window_manager = context.window_manager
+
+        layout.use_property_split = True
+        layout.use_property_decorate = False  # No animation
+
+        col = layout.column(heading='Detect')
+        col.prop(window_manager, 'cfm_analyze_metallic', text='Metallic')
+        col.prop(window_manager, 'cfm_analyze_roughness', text='Roughness')
+
+        def draw_op(layout, bl_idname, **kwargs):
+            op = layout.operator(bl_idname, **kwargs)
+            op.analyze_metallic = window_manager.cfm_analyze_metallic
+            op.analyze_roughness = window_manager.cfm_analyze_roughness
 
         row = layout.row()
-        row.operator(operator.CM_OT_SetActiveMaterialViewportDisplayMaterialProperties.bl_idname,
-                     text='Active Material', icon='MATERIAL')
-        row.operator(operator.CM_OT_SetMaterialDisplayPropertiesFromActiveNode.bl_idname,
-                     text='Active Node', icon='NODETREE')
+        draw_op(row, operator.ActiveMaterialOperator.bl_idname,
+                text='Active Material', icon='MATERIAL')
+        draw_op(row, operator.ActiveMaterialNodeOperator.bl_idname,
+                text='Active Node', icon='NODETREE')
 
-        layout.operator(operator.CM_OT_SetActiveObjectDisplayMaterialProperties.bl_idname,
-                        text='Active Object', icon='OBJECT_DATA')
-        layout.operator(operator.CM_OT_SetAllSelectedObjectsViewportDisplayMaterialProperties.bl_idname,
-                        text='Selected Objects', icon='SCENE_DATA')
-        layout.operator(operator.CM_OT_SetAllMaterialDisplayProperties.bl_idname,
-                        text='All Materials', icon='FILE_BLEND')
+        draw_op(layout, operator.ActiveObjectOperator.bl_idname,
+                text='Active Object', icon='OBJECT_DATA')
+        draw_op(layout, operator.SelectedObjectsOperator.bl_idname,
+                text='Selected Objects', icon='SCENE_DATA')
+        draw_op(layout, operator.AllMaterialsOperator.bl_idname,
+                text='All Materials', icon='FILE_BLEND')
