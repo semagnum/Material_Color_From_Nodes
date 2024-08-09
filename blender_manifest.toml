@@ -53,9 +53,11 @@ license = [
 
 # Optional: build setting.
 # https://docs.blender.org/manual/en/dev/extensions/command_line_arguments.html#command-line-args-extension-build
-# [build]
- paths_exclude_pattern = [
+[build]
+paths_exclude_pattern = [
+   "/.idea/",
    "/.git/",
    "/.venv/",
+   "/venv/",
    "__pycache__/"
- ]
+]
