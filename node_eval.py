@@ -91,6 +91,8 @@ def get_from_node(curr_node: bpy.types.Node, node_key: dict, default_val) -> flo
     if result is not None:
         if callable(node_key[result]):
             return node_key[result](curr_node, node_key, default_val)
+        elif isinstance(node_key[result], float):
+            return node_key[result]
         else:
             direction, albedo_idx = node_key[result]
             curr_socket = getattr(curr_node, direction)[albedo_idx]
