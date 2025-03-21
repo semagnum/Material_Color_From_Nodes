@@ -54,10 +54,13 @@ ALBEDO_MAP = {
     'ShaderNodeSubsurfaceScattering': FIRST_INPUT,
     'ShaderNodeBsdfTranslucent': FIRST_INPUT,
     'ShaderNodeBsdfVelvet': FIRST_INPUT,
+    'ShaderNodeBsdfMetallic': FIRST_INPUT,
+    'ShaderNodeBsdfRayPortal': FIRST_INPUT,
 }
 
 METALLIC_MAP = {
     'ShaderNodeBsdfPrincipled': ('inputs', 6) if IS_BPY_V3 else ('inputs', 1),
+    'ShaderNodeBsdfMetallic': 1.0,
 }
 
 ROUGHNESS_MAP = {
@@ -70,6 +73,7 @@ ROUGHNESS_MAP = {
     'ShaderNodeBsdfHairPrincipled': ('inputs', 5),
     'ShaderNodeBsdfRefraction': ('inputs', 1),
     'ShaderNodeBsdfVelvet': ('inputs', 1),
+    'ShaderNodeBsdfMetallic': ('inputs', 4),
 }
 
 ALBEDO_MAP.update(UNIVERSAL_MAP)
