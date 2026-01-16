@@ -24,6 +24,13 @@ class CM_PT_ObjectColorFromMaterial(bpy.types.Panel):
     bl_region_type = 'WINDOW'
     bl_context = 'material'
 
+    @classmethod
+    def poll(cls, context):
+        return (
+                context.active_object is not None and
+                context.active_object.type != 'GREASEPENCIL'
+        )
+
     def draw(self, context):
         layout = self.layout
         window_manager = context.window_manager
